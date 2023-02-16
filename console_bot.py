@@ -1,16 +1,21 @@
 import re
 
+# ================================= Decorator ================================#
+
 
 def input_error(func):
     def inner(*args):
         try:
             return func(*args)
         except KeyError:
-            return f"{args[0]} does not appear in list"
+            return f"<{args[0]}> does not appear in list"
         except ValueError:
             return "Give me a name and phone please"
 
     return inner
+
+
+# ================================== handlers ================================#
 
 
 def hello(*args):
@@ -24,7 +29,7 @@ def good_bye(*args):
 def show_all(*args):
     for k, v in contacts.items():
         print(f"{k}: {v}")
-    return f"List contain {len(contacts)} contacts"
+    return f"List contain <{len(contacts)}> contacts"
 
 
 @input_error
@@ -34,7 +39,7 @@ def get_phone(*args):
 
 @input_error
 def add_contact(*args):
-    if args[1]:
+    if args[0] and args[1]:
         contacts[args[0]] = args[1]
         return f"I add contact for <{args[0]}> with value <{args[1]}>"
     else:
@@ -54,7 +59,7 @@ def parse_input(user_input):
     return list(filter(lambda item: item != "", user_input.split(" ")))
 
 
-contacts = {}
+# =============================== handler loader =============================#
 
 
 def get_handler(command, *ars):
@@ -69,6 +74,9 @@ def get_handler(command, *ars):
         "exit": good_bye,
     }
     return COMMANDS[command]
+
+
+# ================================ main function =============================#
 
 
 def main():
@@ -89,6 +97,11 @@ def main():
         except AttributeError:
             print("What do you mean?")
 
+
+contacts = {}  # Global variable for storing contacts
+
+
+# ================================ main programm =============================#
 
 if __name__ == "__main__":
 
