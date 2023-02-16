@@ -55,10 +55,6 @@ def change_contact(*args):
         raise ValueError
 
 
-def parse_input(user_input):
-    return list(filter(lambda item: item != "", user_input.split(" ")))
-
-
 # =============================== handler loader =============================#
 
 
