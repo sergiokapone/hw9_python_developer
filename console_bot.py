@@ -88,11 +88,13 @@ def main():
 
     while True:
 
+        # waiting for nonempty input
         while True:
             inp = input(">>> ").strip()
             if inp == "":
                 continue
             break
+
         text = pattern.search(inp)
 
         params = (
