@@ -23,7 +23,7 @@ def hello(*args):
 
 
 def good_bye(*args):
-    return False
+    return "Good bye!"
 
 
 def undefined(*args):
@@ -33,7 +33,7 @@ def undefined(*args):
 def show_all(*args):
     for k, v in contacts.items():
         print(f"{k}: {v}")
-    return f"List contain <{len(contacts)}> contacts"
+    return f"--------------------\nList contain <{len(contacts)}> contact(s)"
 
 
 @input_error
@@ -47,7 +47,7 @@ def add_contact(*args):
         if not contacts.get(args[0]):
             contacts[args[0]] = args[1]
             return f"I add contact for <{args[0]}> with phone <{args[1]}>"
-        return f'Contact <{args[0]}> already in list'
+        return f"Contact <{args[0]}> already in list."
     else:
         raise ValueError
 
@@ -84,7 +84,7 @@ def get_handler(command, *ars):
 def main():
 
     pattern = re.compile(
-        r"^^[a-zA-Z\s,!?]*(hello|add|change|phone|show all|good bye|close|exit)\s*(\s*\w*)\s*(\d*)",
+        r"\b(\.|hello|add|change|phone|show all|good bye|close|exit)\b(?:\s+([a-zA-Z]+))?\b(?:\s+(\d{10}$))?",
         re.IGNORECASE,
     )
 
@@ -112,10 +112,11 @@ def main():
         )
         handler = get_handler(params[0])
         response = handler(params[1], params[2])
-        if response is False:
-            print("Good bye!")
+        if inp.strip() == ".":
             break
         print(response)
+        if response == "Good bye!":
+            break
 
 
 contacts = {}  # Global variable for storing contacts
