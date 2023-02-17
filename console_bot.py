@@ -44,8 +44,10 @@ def get_phone(*args):
 @input_error
 def add_contact(*args):
     if args[0] and args[1]:
-        contacts[args[0]] = args[1]
-        return f"I add contact for <{args[0]}> with phone <{args[1]}>"
+        if not contacts.get(args[0]):
+            contacts[args[0]] = args[1]
+            return f"I add contact for <{args[0]}> with phone <{args[1]}>"
+        return f'Contact <{args[0]}> already in list'
     else:
         raise ValueError
 
@@ -82,7 +84,7 @@ def get_handler(command, *ars):
 def main():
 
     pattern = re.compile(
-        r"^[a-zA-Z\s,!?]*(hello|add|change|phone|show all|good bye|close|exit)\s*(\w*)\s*(\d*)",
+        r"^^[a-zA-Z\s,!?]*(hello|add|change|phone|show all|good bye|close|exit)\s*(\s*\w*)\s*(\d*)",
         re.IGNORECASE,
     )
 
