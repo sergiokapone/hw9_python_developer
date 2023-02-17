@@ -56,7 +56,7 @@ def add_contact(*args):
 def change_contact(*args):
     if contacts.get(args[0]):
         contacts[args[0]] = args[1]
-        return f"I change contact for <{args[0]}> to value <{args[1]}>"
+        return f"I changed contact for <{args[0]}> to value <{args[1]}>"
     else:
         raise ValueError
 
