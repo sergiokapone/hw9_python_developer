@@ -4,15 +4,15 @@ import re
 
 
 def input_error(func):
-    def inner(*args):
+    def wrapper(*args, **kwargs):
         try:
-            return func(*args)
+            return func(*args, **kwargs)
         except KeyError:
             return f"<{args[0]}> does not appear in list"
         except ValueError:
-            return "Give me a name and phone please"
+            return "Give me a name and phone, please"
 
-    return inner
+    return wrapper
 
 
 # ================================== handlers ================================#
@@ -24,6 +24,10 @@ def hello(*args):
 
 def good_bye(*args):
     return False
+
+
+def undefined(*args):
+    return "What do you mean?"
 
 
 def show_all(*args):
@@ -41,7 +45,7 @@ def get_phone(*args):
 def add_contact(*args):
     if args[0] and args[1]:
         contacts[args[0]] = args[1]
-        return f"I add contact for <{args[0]}> with value <{args[1]}>"
+        return f"I add contact for <{args[0]}> with phone <{args[1]}>"
     else:
         raise ValueError
 
@@ -69,7 +73,7 @@ def get_handler(command, *ars):
         "close": good_bye,
         "exit": good_bye,
     }
-    return COMMANDS[command]
+    return COMMANDS.get(command, undefined)
 
 
 # ================================ main function =============================#
@@ -78,20 +82,36 @@ def get_handler(command, *ars):
 def main():
 
     pattern = re.compile(
-        r"^[a-zA-Z\s,!?]*(hello|add|change|phone|show all|good bye|close|exit)\s*(\w*)\s*(\d*)"
+        r"^[a-zA-Z\s,!?]*(hello|add|change|phone|show all|good bye|close|exit)\s*(\w*)\s*(\d*)",
+        re.IGNORECASE,
     )
 
     while True:
-        try:
-            text = pattern.search(input(">>> "))
-            handler = get_handler(*text.groups())
-            response = handler(text.group(2), text.group(3))
-            if response is False:
-                print("Good bye!")
-                break
-            print(response)
-        except AttributeError:
-            print("What do you mean?")
+
+        while True:
+            inp = input(">>> ").strip()
+            if inp == "":
+                continue
+            break
+        text = pattern.search(inp)
+
+        params = (
+            tuple(
+                map(
+                    # Made a commands to be a uppercase
+                    lambda x: x.lower() if text.groups().index(x) == 0 else x,
+                    text.groups(),
+                )
+            )
+            if text
+            else (None, 0, 0)
+        )
+        handler = get_handler(params[0])
+        response = handler(params[1], params[2])
+        if response is False:
+            print("Good bye!")
+            break
+        print(response)
 
 
 contacts = {}  # Global variable for storing contacts
