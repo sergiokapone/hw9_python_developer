@@ -54,9 +54,11 @@ def add_contact(*args):
 
 @input_error
 def change_contact(*args):
-    if contacts.get(args[0]) and args[1]:
-        contacts[args[0]] = args[1]
-        return f"I changed contact for <{args[0]}> to value <{args[1]}>"
+    if args[0] and args[1]:
+        if contacts.get(args[0]):
+            contacts[args[0]] = args[1]
+            return f"I changed contact for <{args[0]}> to value <{args[1]}>"
+        return f"Contact <{args[0]}> does not exist."
     else:
         raise ValueError
 
