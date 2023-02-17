@@ -113,10 +113,10 @@ def main():
         handler = get_handler(params[0])
         response = handler(params[1], params[2])
         if inp.strip() == ".":
-            break
+            return
         print(response)
         if response == "Good bye!":
-            break
+            return
 
 
 contacts = {}  # Global variable for storing contacts
