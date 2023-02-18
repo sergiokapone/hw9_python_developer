@@ -3,7 +3,7 @@ import re
 # ================================= Decorator ================================#
 
 
-def input_error(func):
+def input_error(func, *args, **kwargs):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -31,9 +31,7 @@ def undefined(*args):
 
 
 def show_all(*args):
-    for k, v in contacts.items():
-        print(f"{k}: {v}")
-    return f"--------------------\nList contain <{len(contacts)}> contact(s)"
+    return "show all"
 
 
 @input_error
@@ -66,7 +64,7 @@ def change_contact(*args):
 # =============================== handler loader =============================#
 
 
-def get_handler(command, *ars):
+def get_handler(*args):
     COMMANDS = {
         "hello": hello,
         "add": add_contact,
@@ -77,7 +75,7 @@ def get_handler(command, *ars):
         "close": good_bye,
         "exit": good_bye,
     }
-    return COMMANDS.get(command, undefined)
+    return COMMANDS.get(args[0], undefined)
 
 
 # ================================ main function =============================#
@@ -112,10 +110,14 @@ def main():
             if text
             else (None, 0, 0)
         )
-        handler = get_handler(params[0])
-        response = handler(params[1], params[2])
+        handler = get_handler(*params)
+        response = handler(*params[1:])
         if inp.strip() == ".":
             return
+        if response == "show all":
+            for k, v in contacts.items():
+                print(f"{k}: {v}")
+            response = f"--------------------\nList contain <{len(contacts)}> contact(s)"
         print(response)
         if response == "Good bye!":
             return
